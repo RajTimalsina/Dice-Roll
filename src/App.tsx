@@ -9,21 +9,32 @@ import diceFive from '../assets/Five.png';
 import diceSix from '../assets/Six.png';
 
 export default function App() {
-  const [displayDice, setDisplayDice] = useState(diceOne);
-  const dice = [diceOne, diceTwo, diceThree, diceFour, diceFive, diceSix];
+  const [diceImage, setDiceImage] = useState(diceOne);
+  const diceImages = [diceOne, diceTwo, diceThree, diceFour, diceFive, diceSix];
+  const [rolling, setRolling] = useState(false);
 
-  function diceRoll() {
-    Vibration.vibrate(50);
-    // Alert.alert('Vibration triggered!');
-    const random = Math.floor(Math.random() * 6);
-    setDisplayDice(dice[random]);
-  }
+  const rollDice = () => {
+    if (rolling) return;
+    setRolling(true);
+    let i = 0;
+    const interval = setInterval(() => {
+      setDiceImage(diceImages[i % 6]);
+      i++;
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      const randomIndex = Math.floor(Math.random() * 6);
+      setDiceImage(diceImages[randomIndex]);
+      setRolling(false);
+    }, 1000);
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.diceContainer}>
-        <Image style={styles.diceImage} source={displayDice} />
-        <Text style={styles.rollDiceBtnText} onPress={diceRoll}>
+        <Image style={styles.diceImage} source={diceImage} />
+        <Text style={styles.rollDiceBtnText} onPress={rollDice}>
           ROll The Dice
         </Text>
       </View>
